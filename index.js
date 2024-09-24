@@ -1,7 +1,7 @@
 import { InfuraProvider, JsonRpcProvider  } from '@ethersproject/providers';
 import dotenv from 'dotenv';
 import {Contract} from "ethers";
-import XenContract from '@faircrypto/xen-crypto/build/contracts/XENCrypto.json' assert { type: 'json' };
+import XenContract from '@faircrypto/xen-crypto/build/contracts/XENCrypto.json' with { type: "json" };
 
 dotenv.config();
 
