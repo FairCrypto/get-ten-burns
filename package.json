@@ -1,0 +1,21 @@
+{
+  "name": "get-xen-burns",
+    "type": "module",
+      "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@faircrypto/xen-crypto": "^0.6.1",
+    "ethers": "^5.7.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.2"
+  }
+}
