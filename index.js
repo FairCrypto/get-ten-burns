@@ -26,7 +26,7 @@ async function main() {
   const XEN = new Contract(contractAddress, abi, provider);
   const burns = await XEN.userBurns(userAddress).then(_ => BigInt(_.toString()));
   const balance = await XEN.balanceOf(userAddress).then(_ => BigInt(_.toString()));
-  console.log('Addr:', userAddress, 'XEN balance', balance, 'XEN Burns:', burns)
+  console.log('Addr:', userAddress, 'XEN balance:', balance, 'XEN Burns:', burns)
 }
 
 main().catch(console.error);
