@@ -6,7 +6,7 @@ import XenContract from '@faircrypto/xen-crypto/build/contracts/XENCrypto.json' 
 dotenv.config();
 
 async function main() {
-  const userAddress = '0x4C06A9Abf0bC1d5C91D26477A552B431D42AcB2f';
+  const userAddress = '0xdd78367826D226D68ab446830B3Afd54366a7dEC';
 
   const contractAddress = process.env.CONTRACT_ADDRESS;
   const rpcUrl = process.env.RPC_URL;
@@ -24,8 +24,9 @@ async function main() {
 
   const { abi } = XenContract;
   const XEN = new Contract(contractAddress, abi, provider);
-  const data = await XEN.userBurns(userAddress).then(_ => BigInt(_.toString()));
-  console.log('XEN Burns of ', userAddress, '=', data)
+  const burns = await XEN.userBurns(userAddress).then(_ => BigInt(_.toString()));
+  const balance = await XEN.balanceOf(userAddress).then(_ => BigInt(_.toString()));
+  console.log('Addr:', userAddress, 'XEN balance', balance, 'XEN Burns:', burns)
 }
 
 main().catch(console.error);
