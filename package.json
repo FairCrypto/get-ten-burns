@@ -13,6 +13,7 @@
   "description": "",
   "dependencies": {
     "@faircrypto/xen-crypto": "^0.6.1",
+    "@faircrypto/xenft": "^0.6.5",
     "ethers": "^5.7.1"
   },
   "devDependencies": {
