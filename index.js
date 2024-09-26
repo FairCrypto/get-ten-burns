@@ -1,8 +1,25 @@
 import { InfuraProvider, JsonRpcProvider  } from '@ethersproject/providers';
 import dotenv from 'dotenv';
-import {Contract} from "ethers";
+import {Contract, ethers} from "ethers";
 import XenContract from '@faircrypto/xen-crypto/build/contracts/XENCrypto.json' with { type: "json" };
 import XeNFTContract from '@faircrypto/xenft/build/contracts/XENTorrent.json' with { type: "json" };
+
+const burnRates = [
+  '0',
+  '250000000000000000000000000',
+  '500000000000000000000000000',
+  '1000000000000000000000000000',
+  '2500000000000000000000000000',
+  '5000000000000000000000000000',
+  '10000000000000000000000000000'
+];
+
+const classLimits =  [0, 0, 10000, 6000, 3000, 1000, 100];
+
+const getBurnRate = (id) => {
+  const cls = classLimits.findLastIndex((l, i) => id <= l);
+  return burnRates[cls] || 0;
+}
 
 dotenv.config();
 
@@ -29,13 +46,35 @@ async function main() {
   const XEN = new Contract(contractAddress, xenCryptoAbi, provider);
   const burns = await XEN.userBurns(userAddress).then(_ => BigInt(_.toString()));
   const balance = await XEN.balanceOf(userAddress).then(_ => BigInt(_.toString()));
-  console.log('Addr:', userAddress, 'XEN balance:', balance, 'XEN Burns:', burns)
+  console.log('Address:', userAddress)
+  console.log('  XEN balance (wei):', balance)
+  console.log('  XEN total burns (wei):', burns)
 
   const XENFT = new Contract(minterAddress, xenTorrentAbi, provider);
-  const events = await XENFT.queryFilter("*", '0', )
+  // const events = await XENFT.queryFilter("*", '16300528', )
 
   const tokens = await XENFT.ownedTokens();
-  console.log('XENFT:', userAddress, 'owned', tokens.map(t => t.toString()));
+  /*
+  const burnRates = []
+  for (const i of [0,1,2,3,4,5,6]) {
+    const specialClassesBurnRates = await XENFT.specialClassesBurnRates(i);
+    burnRates.push(specialClassesBurnRates.toString());
+  }
+  const classLimits = []
+  for (const i of [0,1,2,3,4,5,6]) {
+    const specialClassesTokenLimits = await XENFT.specialClassesTokenLimits(i);
+    classLimits.push(specialClassesTokenLimits.toString());
+  }
+  console.log('  XENFT burn rates', burnRates);
+  console.log('  XENFT limits', classLimits);
+   */
+  console.log('  XENFT owned now', tokens.map(t => t.toString()));
+  const minting = XENFT.filters.Transfer(ethers.constants.AddressZero, userAddress);
+  const logs = await XENFT.queryFilter(minting, 16300528, "latest");
+  console.log('  XENFT minted', logs.map(l => l.args?.tokenId.toString()));
+  console.log('  XENFT burns', logs.map(l => {
+    return `${l.args?.tokenId.toString()}: ${BigInt(getBurnRate(l.args?.tokenId.toString()))}`
+  }));
 }
 
 main().catch(console.error);
